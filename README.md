@@ -9,7 +9,38 @@ Over the past four years I've completely transitioned to node as my web applicat
 
 # How does Willow work?
 
-Willow leveradges the great work that's already been done in the JavaScript community and pulls it together in an integrated set of modules. The structure of Willow applications is modeled after (and heavily uses) React. Willow introduces a new type of event handlers to React components that are identified by the developer to be run either on the server-side or client-side. Each event handler also lists dependencies. Dependencies are other handlers that must be run first. For example, imagine submitting a simple form. The flow might look like:
+Willow leveradges the great work that's already been done in the JavaScript community and pulls it together in an integrated set of modules. The structure of Willow applications is modeled after (and heavily uses) React. Willow introduces a new type of event handlers to React components. Each handler specified a name, a method (get, put, post, delete or local), a list of dependencies (other handlers that must be run before itself) and a run method. Two Willow event handlers 
+
+ that are identified by the developer to be run either on the server-side or client-side. Each event handler also lists dependencies. Dependencies are other handlers that must be run first. Defining a two willow event handlers that respond to a `foo` event would look like this:
+
+```js
+Willow.createClass({})
+.on('foo', {
+	name: 'bar',
+	method: 'local',
+	dependencies: [],
+	run: function(e, resolve, reject) {
+		// handler code goes here...
+	}
+})
+.on('foo', {
+	name: 'baz',
+	method: 'post',
+	dependencies: ['bar'],
+	run: function(e, resolve, reject) {
+		// handler code goes here...
+	}
+});
+```
+
+The properties on these event handlers are...
+
+* `name` uniquely identifies the handler
+* `method` determines where and how the run method will execute. It can be either local (runs on the client), post (runs on the server via AJAX post request), get, put or delete.
+* `dependencies` is an array of handler names. A handlers run method will only execute once all of the handlers listed as dependencies have resolved.
+* `run` method that contains the code to execute. The run method takes an event object, resolve and reject callbacks as its arguments. Any data that is passedinto the resolve callback will be merged into the event object for future handlers to use.
+
+Submitting a simple form. The flow might look like:
 
 1. HTTP request is made to the server. Node renders the HTML for the component (form) and sends it to the client.
 2. React on the client attaches the appropriate event listeners to the server rendered HTML.
@@ -35,11 +66,11 @@ Willow is a set of JavaScript modules that allow you to build self contained iso
 
 # Examples
 
-For examples of different components that have been built with Willow check out the [examples repository]();
+For examples of different components that have been built with Willow check out the [examples repository](https://github.com/WillowJs/examples);
 
 # Outstanding questions
 
-- How do we store data consistently among components that might use different databases?
+- How do we store data consistently among components that might use different databases? We don't want to use 4 different external components that all use a different data store. Ideally each component would integrate with the data store that we are using for the application. Alternatively we could force postgres on everyone, force use of knex, or handle all storage at the application level through an event system (flux-like architecture).
 - If two different components both use the same npm module on the client how do we only include that module once as opposed to once for each component that is using it?
 
 # Solved questions
