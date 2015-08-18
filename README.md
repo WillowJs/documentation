@@ -14,7 +14,7 @@ Willow leveradges the great work that's already been done in the JavaScript comm
  that are identified by the developer to be run either on the server-side or client-side. Each event handler also lists dependencies. Dependencies are other handlers that must be run first. Defining a two willow event handlers that respond to a `foo` event would look like this:
 
 ```js
-Willow.createClass({})
+Willow.createClass({ /* React code here */ })
 .on('foo', {
 	name: 'bar',
 	method: 'local',
@@ -66,7 +66,7 @@ Willow is a set of JavaScript modules that allow you to build self contained iso
 
 # Examples
 
-For examples of different components that have been built with Willow check out the [examples repository](https://github.com/WillowJs/examples);
+For examples of different components that have been built with Willow check out the [examples repository](https://github.com/WillowJs/examples).
 
 # Outstanding questions
 
